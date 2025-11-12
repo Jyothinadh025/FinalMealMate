@@ -1,0 +1,176 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menu | FinalMealMate</title>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        /* --- Inline styles to match your current theme --- */
+        .menu-header {
+            text-align: center;
+            background: linear-gradient(135deg, #ff6a00, #ff9068);
+            color: white;
+            padding: 2rem 1rem;
+            border-bottom-left-radius: 50px;
+            border-bottom-right-radius: 50px;
+        }
+
+        .menu-header h2 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .menu-header a {
+            background: white;
+            color: #ff6a00;
+            text-decoration: none;
+            padding: 0.6rem 1.2rem;
+            border-radius: 25px;
+            font-weight: 600;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+
+        .menu-header a:hover {
+            background-color: #fff4e5;
+            color: #ff4500;
+        }
+
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            padding: 3rem;
+            background-color: #fdfdfd;
+        }
+
+        .menu-card {
+            background-color: white;
+            border-radius: 20px;
+            box-shadow: 0px 4px 10px rgba(0,0,0,0.1);
+            overflow: hidden;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .menu-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+        }
+
+        .menu-card img {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+        }
+
+        .menu-info {
+            padding: 1.2rem;
+        }
+
+        .menu-info h3 {
+            color: #ff6a00;
+            margin: 0.5rem 0;
+        }
+
+        .menu-info p {
+            font-size: 0.95rem;
+            color: #555;
+            line-height: 1.5;
+        }
+
+        .menu-bottom {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 1rem;
+        }
+
+        .menu-price {
+            font-weight: 700;
+            color: #222;
+            font-size: 1.1rem;
+        }
+
+        .menu-veg {
+            font-size: 0.85rem;
+            background-color: #d4edda;
+            color: #155724;
+            padding: 0.3rem 0.7rem;
+            border-radius: 8px;
+        }
+
+        .menu-nonveg {
+            font-size: 0.85rem;
+            background-color: #f8d7da;
+            color: #721c24;
+            padding: 0.3rem 0.7rem;
+            border-radius: 8px;
+        }
+
+        .menu-add {
+            background-color: #ff6a00;
+            color: white;
+            border: none;
+            padding: 0.6rem 1.3rem;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .menu-add:hover {
+            background-color: #ff4500;
+        }
+
+        .footer {
+            margin-top: 3rem;
+            background: linear-gradient(135deg, #ff6a00, #ff9068);
+            color: white;
+            text-align: center;
+            padding: 1.2rem;
+            border-top-left-radius: 30px;
+            border-top-right-radius: 30px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <div class="menu-header">
+        <h2>🍽️ Welcome, {{ username }}!</h2>
+        <p>Here’s today’s delicious menu — pick your favorites!</p>
+        <a href="{% url 'show_cart' username %}">🛒 Go to Cart</a>
+    </div>
+
+    <!-- Menu Grid -->
+    <section class="menu-grid">
+        {% for item in itemList %}
+        <div class="menu-card">
+            <img src="{{ item.picture }}" alt="{{ item.name }}">
+            <div class="menu-info">
+                <h3>{{ item.name }}</h3>
+                <p>{{ item.description }}</p>
+                <div class="menu-bottom">
+                    <span class="menu-price">₹{{ item.price }}</span>
+                    {% if item.vegeterian %}
+                        <span class="menu-veg">Veg</span>
+                    {% else %}
+                        <span class="menu-nonveg">Non-Veg</span>
+                    {% endif %}
+                </div>
+                <div style="margin-top: 1rem; text-align: center;">
+                    <a href="{% url 'add_to_cart' item.id username %}" class="menu-add">Add to Cart ➕</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>FinalMealMate | Designed with ❤️ by Jothi Nadh</p>
+    </footer>
+
+</body>
+</html>

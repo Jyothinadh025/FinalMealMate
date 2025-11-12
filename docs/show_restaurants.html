@@ -1,0 +1,180 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>All Restaurants | MealMate Admin</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #ff6a88, #ff99ac);
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 2rem;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: auto;
+            background: #fff;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            padding: 2rem 2.5rem;
+            animation: fadeIn 0.7s ease;
+        }
+
+        h2 {
+            text-align: center;
+            color: #ff6a88;
+            margin-bottom: 2rem;
+            font-size: 2rem;
+        }
+
+        .restaurant-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+
+        .restaurant-card {
+            background: #fff7f8;
+            border-radius: 20px;
+            box-shadow: 0 4px 15px rgba(255, 106, 136, 0.15);
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+        }
+
+        .restaurant-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 8px 25px rgba(255, 106, 136, 0.25);
+        }
+
+        .restaurant-card img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+
+        .restaurant-info {
+            padding: 1.2rem;
+        }
+
+        .restaurant-info h3 {
+            color: #ff4b5c;
+            font-size: 1.3rem;
+            margin: 0.5rem 0;
+        }
+
+        .restaurant-info p {
+            color: #666;
+            margin: 0.2rem 0;
+            font-size: 0.9rem;
+        }
+
+        .rating {
+            background-color: #ff6a88;
+            color: #fff;
+            padding: 0.2rem 0.8rem;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            display: inline-block;
+            margin-top: 0.5rem;
+        }
+
+        .actions {
+            margin-top: 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .actions a {
+            text-decoration: none;
+            background: linear-gradient(90deg, #ff6a88, #ff99ac);
+            color: white;
+            padding: 0.6rem 1rem;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-align: center;
+            box-shadow: 0 3px 10px rgba(255, 106, 136, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .actions a:hover {
+            transform: scale(1.05);
+            background: linear-gradient(90deg, #ff4b5c, #ff99ac);
+            box-shadow: 0 6px 18px rgba(255, 106, 136, 0.4);
+        }
+
+        .no-data {
+            text-align: center;
+            color: #777;
+            font-size: 1.1rem;
+            margin-top: 2rem;
+        }
+
+        .back-btn {
+            display: block;
+            width: fit-content;
+            margin: 2rem auto 0;
+            text-decoration: none;
+            background: linear-gradient(90deg, #ff6a88, #ff99ac);
+            color: #fff;
+            padding: 0.8rem 1.5rem;
+            border-radius: 12px;
+            font-weight: 600;
+            box-shadow: 0 4px 15px rgba(255, 106, 136, 0.3);
+            transition: 0.3s;
+        }
+
+        .back-btn:hover {
+            transform: scale(1.05);
+            background: linear-gradient(90deg, #ff4b5c, #ff99ac);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2>🍴 All Registered Restaurants</h2>
+
+        {% if restaurantList %}
+        <div class="restaurant-grid">
+            {% for r in restaurantList %}
+            <div class="restaurant-card">
+                <img src="{{ r.picture }}" alt="{{ r.name }}">
+                <div class="restaurant-info">
+                    <h3>{{ r.name }}</h3>
+                    <p>{{ r.cuisine }}</p>
+                    <span class="rating">⭐ {{ r.rating }}</span>
+
+                    <div class="actions">
+                        <a href="{% url 'open_update_restaurant' r.id %}">✏️ Update Info</a>
+                        <a href="{% url 'open_update_menu' r.id %}">🍽️ Update Menu</a>
+                        <a href="{% url 'delete_restaurant' r.id %}" style="background:linear-gradient(90deg,#ff4b5c,#ff6a88)">🗑️ Delete</a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+            <p class="no-data">No restaurants added yet. Please add one from Admin Dashboard.</p>
+        {% endif %}
+
+        <a href="{% url 'open_add_restaurant' %}" class="back-btn">➕ Add Another Restaurant</a>
+    </div>
+
+</body>
+</html>

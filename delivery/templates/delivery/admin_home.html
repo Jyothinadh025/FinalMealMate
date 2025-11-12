@@ -1,0 +1,93 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard | MealMate</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            background: linear-gradient(135deg, #ff6a88, #ff99ac);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            font-family: 'Poppins', sans-serif;
+            color: #333;
+            margin: 0;
+        }
+
+        .admin-container {
+            background: #fff;
+            padding: 3rem 4rem;
+            border-radius: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            max-width: 480px;
+            width: 90%;
+            animation: fadeIn 0.7s ease;
+        }
+
+        h3 {
+            color: #ff6a88;
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+        }
+
+        .admin-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .admin-actions a {
+            background: linear-gradient(90deg, #ff6a88, #ff99ac);
+            color: white;
+            font-weight: 600;
+            text-decoration: none;
+            padding: 0.9rem;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(255, 106, 136, 0.3);
+        }
+
+        .admin-actions a:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 18px rgba(255, 106, 136, 0.4);
+            background: linear-gradient(90deg, #ff4b5c, #ff99ac);
+        }
+
+        .footer-note {
+            margin-top: 2rem;
+            color: #777;
+            font-size: 0.9rem;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="admin-container">
+        <h3>👨‍🍳 Welcome, Admin!</h3>
+        <p style="color:#666;margin-bottom:2rem;">Manage your restaurants and menus efficiently below.</p>
+
+        <div class="admin-actions">
+            <a href="{% url 'open_add_restaurant' %}">➕ Add New Restaurant</a>
+            <a href="{% url 'open_show_restaurant' %}">📋 View All Restaurants</a>
+        </div>
+
+        <div class="footer-note">
+            © 2025 MealMate | Built with ❤️ by Jyothinadh A
+        </div>
+    </div>
+
+</body>
+</html>

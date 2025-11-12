@@ -1,0 +1,42 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add New Restaurant | MealMate</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <!-- Outer Wrapper -->
+    <div class="auth-container">
+        <div class="auth-box" style="max-width: 450px;">
+            <h3>🍴 Add New Restaurant</h3>
+            <p style="color:#777; margin-bottom:1.5rem;">Enter the details below to register your restaurant</p>
+
+            <form action="{% url 'add_restaurant' %}" method="post">
+                {% csrf_token %}
+                
+                <label>Restaurant Name</label>
+                <input type="text" name="name" placeholder="e.g., Spice Villa" required>
+
+                <label>Picture URL</label>
+                <input type="url" name="picture" placeholder="Paste an image link" required>
+
+                <label>Cuisine Type</label>
+                <input type="text" name="cuisine" placeholder="e.g., Indian, Italian, Chinese" required>
+
+                <label>Rating (0-5)</label>
+                <input type="number" name="rating" min="0" max="5" step="0.5" placeholder="4.5" required>
+
+                <button type="submit">➕ Add Restaurant</button>
+            </form>
+
+            <a href="/" style="display:block;margin-top:1rem;color:#ff6a88;text-decoration:none;">← Back to Home</a>
+        </div>
+    </div>
+
+</body>
+</html>

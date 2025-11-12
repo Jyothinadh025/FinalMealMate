@@ -1,0 +1,46 @@
+
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Explore Restaurants</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <!-- Header -->
+    <div class="cart-header">
+        <h2>🍽️ Welcome, {{ username }}!</h2>
+        <p>Discover your favorite restaurants and delicious meals near you.</p>
+    </div>
+
+    <!-- Restaurant Grid -->
+    <section class="restaurant-grid">
+        {% for r in restaurantList %}
+        <div class="restaurant-card">
+            <!-- Restaurant Image -->
+            <img src="{{ r.picture }}" alt="{{ r.name }}">
+            
+            <!-- Restaurant Info -->
+            <div class="restaurant-info">
+                <h3>{{ r.name }}</h3>
+                <p>{{ r.cuisine }}</p>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 0.8rem;">
+                    <span class="rating">⭐ {{ r.rating }}</span>
+                    <!-- ✅ Fixed URL to include username -->
+                    <a href="{% url 'view_menu' r.id username %}" class="btn">View Menu</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>🍴 FinalMealMate | Designed with ❤️ by Jyothinadh A</p>
+    </footer>
+
+</body>
+</html>

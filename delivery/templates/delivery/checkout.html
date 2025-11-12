@@ -1,0 +1,129 @@
+
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout | Meal Buddy</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #ff9a9e, #fad0c4);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .container {
+            background: #fff;
+            border-radius: 20px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+            padding: 2rem;
+            width: 90%;
+            max-width: 700px;
+            text-align: center;
+        }
+        h2 {
+            color: #ff4b5c;
+            margin-bottom: 1rem;
+        }
+        table {
+            width: 100%;
+            margin-top: 1.5rem;
+            border-collapse: collapse;
+        }
+        th, td {
+            text-align: left;
+            padding: 0.8rem;
+        }
+        th {
+            background: #fff0f2;
+            color: #ff4b5c;
+        }
+        tr:nth-child(even) {
+            background: #fff9fa;
+        }
+        .total {
+            text-align: right;
+            font-weight: 700;
+            margin-top: 1rem;
+            font-size: 1.2rem;
+        }
+        button {
+            background: linear-gradient(90deg, #ff6a88, #ff99ac);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 1rem;
+            margin-top: 1.5rem;
+        }
+        button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 12px rgba(255, 106, 136, 0.3);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Checkout 🧾</h2>
+        <p>Welcome, {{ username }}</p>
+
+        <table>
+            <tr>
+                <th>Item</th>
+                <th>Price</th>
+            </tr>
+            {% for item in cart_items %}
+            <tr>
+                <td>{{ item.name }}</td>
+                <td>₹{{ item.price }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+
+        <div class="total">Total: ₹{{ total_price }}</div>
+
+        <button id="rzp-button1">Proceed to Pay</button>
+    </div>
+
+    <script>
+        var options = {
+            "key": "{{ razorpay_key_id }}", // Razorpay key ID from Django
+            "amount": "{{ amount|floatformat:2 }}" * 100, // amount in paise
+            "currency": "INR",
+            "name": "Meal Buddy",
+            "description": "Food Order Payment",
+            "order_id": "{{ order_id }}",
+            "handler": function (response){
+                alert("✅ Payment successful!");
+                window.location.href = "/orders/{{ username }}/";
+            },
+            "prefill": {
+                "name": "{{ username }}",
+                "email": "customer@example.com",
+                "contact": "9999999999"
+            },
+            "theme": {
+                "color": "#ff4b5c"
+            }
+        };
+
+        document.getElementById('rzp-button1').onclick = function(e){
+            var rzp1 = new Razorpay(options);
+            rzp1.on('payment.failed', function (response){
+                alert("❌ Oops! Something went wrong.\nPayment Failed");
+            });
+            rzp1.open();
+            e.preventDefault();
+        }
+    </script>
+</body>
+</html>

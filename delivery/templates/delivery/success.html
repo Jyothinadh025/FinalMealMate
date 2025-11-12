@@ -1,0 +1,86 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Success | Meal Buddy</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <style>
+        body {
+            background: linear-gradient(135deg, #a8edea, #fed6e3);
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+        }
+
+        .success-container {
+            background: #fff;
+            padding: 2rem 2.5rem;
+            border-radius: 16px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+            text-align: center;
+            width: 380px;
+            animation: fadeIn 0.4s ease-in-out;
+        }
+
+        .emoji {
+            font-size: 3rem;
+            margin-bottom: 0.5rem;
+        }
+
+        h2 {
+            color: #28a745;
+            margin-bottom: 1rem;
+        }
+
+        p {
+            color: #333;
+            font-size: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        a {
+            display: inline-block;
+            background: #28a745;
+            color: white;
+            padding: 0.7rem 1.2rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: background 0.3s;
+        }
+
+        a:hover {
+            background: #1e7d34;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+    <div class="success-container">
+        <div class="emoji">✅</div>
+        <h2>Success!</h2>
+
+        <!-- Dynamic message from views -->
+        <p>{{ message|default:"Login successful! Welcome to Meal Buddy." }}</p>
+
+        <!-- Continue button -->
+        {% if next_url and username %}
+    <a href="{% url next_url username %}">Continue</a>
+{% elif next_url %}
+    <a href="{% url next_url %}">Continue</a>
+{% else %}
+    <a href="{% url 'open_signin' %}">Go to Login</a>
+{% endif %}
+    </div>
+</body>
+</html>
