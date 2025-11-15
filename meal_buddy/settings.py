@@ -94,7 +94,6 @@ STATIC_URL = '/static/'
 
 STATICFILES_DIRS = [
     BASE_DIR / 'delivery' / 'static',
-    BASE_DIR / 'frontend' / 'static',   # optional, only if exists
 ]
 
 STATIC_ROOT = BASE_DIR / 'staticfiles'
