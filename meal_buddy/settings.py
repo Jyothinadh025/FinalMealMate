@@ -1,16 +1,29 @@
-
 import os
 from pathlib import Path
+import environ
 
-# ------------------ BASE DIR ------------------
+# Initialize environment variables
+env = environ.Env()
+environ.Env.read_env(os.path.join(os.path.dirname(__file__), '..', '.env'))
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# ------------------ SECURITY SETTINGS ------------------
-SECRET_KEY = 'django-insecure-your-secret-key-here'
-DEBUG = True
-ALLOWED_HOSTS = ['*']
+# ---------------- SECURITY ----------------
+SECRET_KEY = env('SECRET_KEY', default='unsafe-secret-key')
+DEBUG = env.bool('DEBUG', default=False)
 
-# ------------------ INSTALLED APPS ------------------
+# Render hostname + local
+ALLOWED_HOSTS = [
+    'localhost',
+    '127.0.0.1',
+    '.onrender.com',
+]
+
+CSRF_TRUSTED_ORIGINS = [
+    'https://*.onrender.com',
+]
+
+# ---------------- INSTALLED APPS ----------------
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -21,9 +34,10 @@ INSTALLED_APPS = [
     'delivery',
 ]
 
-# ------------------ MIDDLEWARE ------------------
+# ---------------- MIDDLEWARE ----------------
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',  # ⭐ Required for Render static
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -37,7 +51,7 @@ ROOT_URLCONF = 'meal_buddy.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'templates')],
+        'DIRS': [BASE_DIR / "templates"],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -52,7 +66,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'meal_buddy.wsgi.application'
 
-# ------------------ DATABASE ------------------
+# ---------------- DATABASE ----------------
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
@@ -60,7 +74,7 @@ DATABASES = {
     }
 }
 
-# ------------------ PASSWORD VALIDATORS ------------------
+# ---------------- PASSWORD VALIDATION ----------------
 AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
     {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator'},
@@ -68,27 +82,33 @@ AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator'},
 ]
 
-# ------------------ LANGUAGE / TIMEZONE ------------------
+# ---------------- TIME & LANGUAGE ----------------
 LANGUAGE_CODE = 'en-us'
 TIME_ZONE = 'Asia/Kolkata'
 USE_I18N = True
 USE_TZ = True
 
-MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-
+# ---------------- STATIC & MEDIA ----------------
+# ---------------- STATIC & MEDIA ----------------
 STATIC_URL = '/static/'
-STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
+STATICFILES_DIRS = [
+    BASE_DIR / 'delivery' / 'static',
+    BASE_DIR / 'frontend' / 'static',   # optional, only if exists
+]
+
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
+
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# ------------------ RAZORPAY KEYS (Test Mode) ------------------
-# Provided by you
-RAZORPAY_KEY_ID = 'rzp_test_RPInetkpqOv0Pv'
-RAZORPAY_KEY_SECRET = 'zt3tc4fxUUF9uRoF2RkncZqy'
+# ---------------- RAZORPAY (FROM ENVIRONMENT) ----------------
+RAZORPAY_KEY_ID = os.environ.get("RAZORPAY_KEY_ID")
+RAZORPAY_KEY_SECRET = os.environ.get("RAZORPAY_KEY_SECRET")
 
-# Debug print to confirm loading (remove in production)
 if DEBUG:
-    print("✅ Razorpay Key ID loaded:", RAZORPAY_KEY_ID)
+    print("DEBUG MODE ON — Razorpay:", RAZORPAY_KEY_ID)
