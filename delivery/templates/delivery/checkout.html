@@ -97,7 +97,8 @@
     <script>
         var options = {
             "key": "{{ razorpay_key_id }}", // Razorpay key ID from Django
-            "amount": "{{ amount|floatformat:2 }}" * 100, // amount in paise
+            "amount": "{{ total_price_in_paise }}",
+ // amount in paise
             "currency": "INR",
             "name": "Meal Buddy",
             "description": "Food Order Payment",

@@ -1,12 +1,10 @@
+
 from django.urls import path
-from django.conf import settings
-from django.conf.urls.static import static
 from . import views
 
 urlpatterns = [
     path('', views.index, name='index'),
 
-    # Authentication
     path('open_signin/', views.open_signin, name='open_signin'),
     path('open_signup/', views.open_signup, name='open_signup'),
     path('signup/', views.signup, name='signup'),
@@ -19,5 +17,3 @@ urlpatterns = [
     path('show_cart/<str:username>/', views.show_cart, name='show_cart'),
     path('checkout/<str:username>/', views.checkout, name='checkout'),
 ]
-
-urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
