@@ -41,7 +41,7 @@ INSTALLED_APPS = [
 # ---------------- MIDDLEWARE ----------------
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',  
+    'whitenoise.middleware.WhiteNoiseMiddleware',   # Required for Render static
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -52,6 +52,7 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'meal_buddy.urls'
 
+# ---------------- TEMPLATES ----------------
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -94,14 +95,20 @@ USE_TZ = True
 
 # ---------------- STATIC FILES ----------------
 STATIC_URL = '/static/'
+
+# Where your static folder is located  
 STATICFILES_DIRS = [
-    BASE_DIR / 'delivery' / 'static',
+    BASE_DIR / 'static',
 ]
+
+# Where collectstatic dumps files (Render will serve this)
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
+# Required for serving CSS/JS on Render
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 # ---------------- CLOUDINARY MEDIA STORAGE ----------------
+# Cloudinary stores all uploaded images
 DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
 CLOUDINARY_STORAGE = {
@@ -110,12 +117,12 @@ CLOUDINARY_STORAGE = {
     'API_SECRET': env('CLOUDINARY_API_SECRET'),
 }
 
-MEDIA_URL = '/media/'
+# Do NOT use MEDIA_URL for Cloudinary
+MEDIA_URL = '/media/'  # kept to avoid breaking templates, but Cloudinary overrides actual usage
 
 # ---------------- RAZORPAY ----------------
-# ---------------- RAZORPAY ----------------
-RAZORPAY_KEY_ID = 'rzp_test_RPInetkpqOv0Pv'
-RAZORPAY_KEY_SECRET = 'zt3tc4fxUUF9uRoF2RkncZqy'
+RAZORPAY_KEY_ID = env('RAZORPAY_KEY_ID', default='rzp_test_RPInetkpqOv0Pv')
+RAZORPAY_KEY_SECRET = env('RAZORPAY_KEY_SECRET', default='zt3tc4fxUUF9uRoF2RkncZqy')
 
 if DEBUG:
     print("DEBUG MODE ON — Razorpay:", RAZORPAY_KEY_ID)
