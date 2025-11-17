@@ -12,7 +12,6 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = env('SECRET_KEY', default='unsafe-secret-key')
 DEBUG = env.bool('DEBUG', default=False)
 
-# Render hostname + local
 ALLOWED_HOSTS = [
     'localhost',
     '127.0.0.1',
@@ -31,13 +30,18 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
+    # Cloudinary apps
+    'cloudinary',
+    'cloudinary_storage',
+
     'delivery',
 ]
 
 # ---------------- MIDDLEWARE ----------------
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',  # ⭐ Required for Render static
+    'whitenoise.middleware.WhiteNoiseMiddleware',  
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -88,26 +92,30 @@ TIME_ZONE = 'Asia/Kolkata'
 USE_I18N = True
 USE_TZ = True
 
-# ---------------- STATIC & MEDIA ----------------
-# ---------------- STATIC & MEDIA ----------------
+# ---------------- STATIC FILES ----------------
 STATIC_URL = '/static/'
-
 STATICFILES_DIRS = [
     BASE_DIR / 'delivery' / 'static',
 ]
-
 STATIC_ROOT = BASE_DIR / 'staticfiles'
-
-MEDIA_URL = '/media/'
-MEDIA_ROOT = BASE_DIR / 'media'
 
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+# ---------------- CLOUDINARY MEDIA STORAGE ----------------
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
-# ---------------- RAZORPAY (FROM ENVIRONMENT) ----------------
-RAZORPAY_KEY_ID = os.environ.get("RAZORPAY_KEY_ID")
-RAZORPAY_KEY_SECRET = os.environ.get("RAZORPAY_KEY_SECRET")
+CLOUDINARY_STORAGE = {
+    'CLOUD_NAME': env('CLOUDINARY_CLOUD_NAME'),
+    'API_KEY': env('CLOUDINARY_API_KEY'),
+    'API_SECRET': env('CLOUDINARY_API_SECRET'),
+}
+
+MEDIA_URL = '/media/'
+
+# ---------------- RAZORPAY ----------------
+# ---------------- RAZORPAY ----------------
+RAZORPAY_KEY_ID = 'rzp_test_RPInetkpqOv0Pv'
+RAZORPAY_KEY_SECRET = 'zt3tc4fxUUF9uRoF2RkncZqy'
 
 if DEBUG:
     print("DEBUG MODE ON — Razorpay:", RAZORPAY_KEY_ID)

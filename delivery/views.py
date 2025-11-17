@@ -1,9 +1,12 @@
 from django.shortcuts import render, redirect
-from .models import Customer, Restaurant, Item, Cart
+from .models import Customer, Restaurant, Item, Cart, CartItem
 import razorpay
 from meal_buddy.settings import RAZORPAY_KEY_ID, RAZORPAY_KEY_SECRET
 
 
+# -------------------------------------------
+# INDEX / SIGNIN / SIGNUP
+# -------------------------------------------
 def index(request):
     return render(request, 'delivery/index.html')
 
@@ -55,6 +58,9 @@ def signin(request):
     return redirect('open_signin')
 
 
+# -------------------------------------------
+# USER HOME + MENU
+# -------------------------------------------
 def customer_home(request, username):
     restaurants = Restaurant.objects.all()
     return render(request, 'delivery/customer_home.html', {
@@ -74,54 +80,83 @@ def view_menu(request, restaurant_id, username):
     })
 
 
+# -------------------------------------------
+# CART FUNCTIONS (+ / - / REMOVE)
+# -------------------------------------------
+# ---------------- ADD TO CART ----------------
 def add_to_cart(request, item_id, username):
     customer = Customer.objects.get(username=username)
+    cart, created = Cart.objects.get_or_create(customer=customer)
     item = Item.objects.get(id=item_id)
 
-    cart, created = Cart.objects.get_or_create(customer=customer)
-    cart.items.add(item)
+    cart_item, created = CartItem.objects.get_or_create(cart=cart, item=item)
+
+    # If item is already in cart, increase quantity
+    if not created:
+        cart_item.quantity += 1
+        cart_item.save()
 
     return redirect('show_cart', username=username)
 
 
+# ---------------- SHOW CART ----------------
 def show_cart(request, username):
     customer = Customer.objects.get(username=username)
     cart, created = Cart.objects.get_or_create(customer=customer)
 
-    items = cart.items.all()
+    cart_items = CartItem.objects.filter(cart=cart)
     total = cart.total_price()
 
     return render(request, 'delivery/cart.html', {
         "username": username,
-        "itemList": items,
+        "cart_items": cart_items,
         "total_price": total
     })
 
 
-# --------------------------------------------------------
-# ✨ FIXED — FULLY WORKING RAZORPAY CHECKOUT VIEW
-# --------------------------------------------------------
+# ---------------- INCREASE ----------------
+# ---------------- INCREASE ----------------
+def increase_quantity(request, cart_item_id, username):
+    cart_item = CartItem.objects.get(id=cart_item_id)
+    cart_item.quantity += 1
+    cart_item.save()
+    return redirect('show_cart', username=username)
+
+# ---------------- DECREASE ----------------
+def decrease_quantity(request, cart_item_id, username):
+    cart_item = CartItem.objects.get(id=cart_item_id)
+
+    if cart_item.quantity > 1:
+        cart_item.quantity -= 1
+        cart_item.save()
+    else:
+        cart_item.delete()
+
+    return redirect('show_cart', username=username)
+
+# -------------------------------------------
+# RAZORPAY CHECKOUT
+# -------------------------------------------
 def checkout(request, username):
     customer = Customer.objects.get(username=username)
     cart = Cart.objects.get(customer=customer)
-    cart_items = cart.items.all()
+    cart_items = CartItem.objects.filter(cart=cart)
 
     total_price = cart.total_price()
 
     if total_price <= 0:
-        return render(request, 'delivery/fail.html', {"message": "Cart is empty!"})
+        return render(request, 'delivery/fail.html', {"message": "Your cart is empty!"})
 
-    # Razorpay works in paise → ₹149 = 14900
     total_price_in_paise = int(total_price * 100)
 
     # Create Razorpay client
     client = razorpay.Client(auth=(RAZORPAY_KEY_ID, RAZORPAY_KEY_SECRET))
 
-    # Create payment order
+    # Create Razorpay order
     order = client.order.create({
         "amount": total_price_in_paise,
         "currency": "INR",
-        "payment_capture": 1,
+        "payment_capture": 1
     })
 
     return render(request, 'delivery/checkout.html', {
@@ -131,4 +166,16 @@ def checkout(request, username):
         "total_price_in_paise": total_price_in_paise,
         "order_id": order["id"],
         "razorpay_key_id": RAZORPAY_KEY_ID,
+    })
+
+
+# -------------------------------------------
+# ORDER SUCCESS PAGE
+# -------------------------------------------
+def order_success(request, username):
+    customer = Customer.objects.get(username=username)
+
+    return render(request, "delivery/orders.html", {
+        "username": username,
+        "customer": customer
     })

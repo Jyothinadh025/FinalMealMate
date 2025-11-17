@@ -1,7 +1,6 @@
-
-{% load static %}
 <!DOCTYPE html>
 <html lang="en">
+{% load static %} 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -87,7 +86,11 @@
         {% for item in itemList %}
         <div class="menu-card">
 
-            <img src="{{ item.picture.url }}" alt="{{ item.name }}">
+            {% if item.picture %}
+    <img src="{{ item.picture.url }}" class="item-img">
+{% else %}
+    <img src="/static/images/default_item.jpg" class="item-img">
+{% endif %}
 
             <div class="menu-info">
                 <h3>{{ item.name }}</h3>

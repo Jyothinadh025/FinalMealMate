@@ -46,7 +46,7 @@
     .item-info {
       display: flex;
       gap: 1rem;
-      width: 70%;
+      width: 60%;
     }
 
     .item-info img {
@@ -54,6 +54,26 @@
       height: 90px;
       object-fit: cover;
       border-radius: 10px;
+    }
+
+    .qty-box {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .qty-btn {
+      background: #ff6a88;
+      color: white;
+      font-size: 20px;
+      width: 32px;
+      height: 32px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border-radius: 8px;
+      cursor: pointer;
+      text-decoration: none;
     }
 
     .price {
@@ -86,21 +106,31 @@
   <div class="container">
     <h2>Your Cart 🛒</h2>
 
-    {% for item in itemList %}
+    {% for ci in cart_items %}
     <div class="cart-item">
       <div class="item-info">
-        <img src="{{ item.picture.url }}" alt="{{ item.name }}">
+        <img src="{{ ci.item.picture.url }}" alt="{{ ci.item.name }}">
         <div>
-          <h4>{{ item.name }}</h4>
-          <p>{{ item.description }}</p>
+          <h4>{{ ci.item.name }}</h4>
+          <p>{{ ci.item.description }}</p>
         </div>
       </div>
-      <div class="price">₹{{ item.price }}</div>
+
+      <div class="qty-box">
+        <a class="qty-btn" href="{% url 'decrease_quantity' ci.id username %}">−</a>
+        <span>{{ ci.quantity }}</span>
+        <a class="qty-btn" href="{% url 'increase_quantity' ci.id username %}">+</a>
+      </div>
+
+      <div class="price">₹{{ ci.subtotal }}</div>
     </div>
     {% endfor %}
 
     <div class="total">Total: ₹{{ total_price }}</div>
-    <button class="checkout-btn" onclick="window.location.href='/checkout/{{ username }}/'">Proceed to Checkout</button>
+
+    <button class="checkout-btn" onclick="window.location.href='/checkout/{{ username }}/'">
+      Proceed to Checkout
+    </button>
   </div>
 
 </body>

@@ -1,6 +1,6 @@
-{% load static %}
 <!DOCTYPE html>
 <html lang="en">
+{% load static %}
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -82,7 +82,11 @@
         {% for restaurant in restaurantList %}
         <div class="restaurant-card">
 
-            <img src="{{ restaurant.picture.url }}" alt="{{ restaurant.name }}">
+            {% if restaurant.picture %}
+    <img src="{{ restaurant.picture.url }}" class="restaurant-img">
+{% else %}
+    <img src="/static/images/default_restaurant.jpg" class="restaurant-img">
+{% endif %}
 
             <div class="restaurant-info">
                 <h3>{{ restaurant.name }}</h3>

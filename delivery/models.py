@@ -19,7 +19,7 @@ class Customer(models.Model):
 # ---------------------------------------
 class Restaurant(models.Model):
     name = models.CharField(max_length=50)
-    picture = models.ImageField(upload_to='restaurant_images/', blank=True, null=True)
+    picture = models.ImageField(upload_to='delivery/restaurant_images', blank=True, null=True)
     cuisine = models.CharField(max_length=200)
     rating = models.FloatField()
 
@@ -36,21 +36,32 @@ class Item(models.Model):
     description = models.CharField(max_length=300)
     price = models.FloatField()
     vegeterian = models.BooleanField(default=False)
-    picture = models.ImageField(upload_to='item_images/', blank=True, null=True)
+    picture = models.ImageField(upload_to='delivery/item_images', blank=True, null=True)
 
     def __str__(self):
         return f"{self.name} ({self.restaurant.name})"
 
 
-# ---------------------------------------
-# Cart Model
-# ---------------------------------------
+# ------------------------------------------------
+# Updated Cart Model USING CartItem (Correct)
+# ------------------------------------------------
 class Cart(models.Model):
-    customer = models.ForeignKey(Customer, on_delete=models.CASCADE, related_name="cart")
-    items = models.ManyToManyField("Item", related_name="carts")
-
+    customer = models.OneToOneField(Customer, on_delete=models.CASCADE)
+    
     def total_price(self):
-        return sum(item.price for item in self.items.all())
+        return sum(ci.item.price * ci.quantity for ci in self.cart_items.all())
 
     def __str__(self):
         return f"{self.customer.username}'s Cart"
+
+
+class CartItem(models.Model):
+    cart = models.ForeignKey(Cart, on_delete=models.CASCADE, related_name="cart_items")
+    item = models.ForeignKey(Item, on_delete=models.CASCADE)
+    quantity = models.PositiveIntegerField(default=1)
+
+    def subtotal(self):
+        return self.item.price * self.quantity
+
+    def __str__(self):
+        return f"{self.item.name} × {self.quantity}"
