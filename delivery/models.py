@@ -1,4 +1,5 @@
 from django.db import models
+from cloudinary.models import CloudinaryField
 
 # ---------------------------------------
 # Customer Model
@@ -19,8 +20,7 @@ class Customer(models.Model):
 # ---------------------------------------
 class Restaurant(models.Model):
     name = models.CharField(max_length=50)
-    picture = models.ImageField(upload_to='delivery/restaurant_images', blank=True, null=True)
-    cuisine = models.CharField(max_length=200)
+    picture = CloudinaryField('image')
     rating = models.FloatField()
 
     def __str__(self):
@@ -36,7 +36,8 @@ class Item(models.Model):
     description = models.CharField(max_length=300)
     price = models.FloatField()
     vegeterian = models.BooleanField(default=False)
-    picture = models.ImageField(upload_to='delivery/item_images', blank=True, null=True)
+    picture = CloudinaryField('image')
+
 
     def __str__(self):
         return f"{self.name} ({self.restaurant.name})"
