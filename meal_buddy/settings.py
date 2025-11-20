@@ -126,3 +126,8 @@ RAZORPAY_KEY_SECRET = env('RAZORPAY_KEY_SECRET', default='zt3tc4fxUUF9uRoF2RkncZ
 
 if DEBUG:
     print("DEBUG MODE ON — Razorpay:", RAZORPAY_KEY_ID)
+
+
+print("Cloudinary Name =", env('CLOUDINARY_CLOUD_NAME', default='NOT FOUND'))
+print("Cloudinary Key =", env('CLOUDINARY_API_KEY', default='NOT FOUND'))
+print("Cloudinary Secret =", env('CLOUDINARY_API_SECRET', default='NOT FOUND'))

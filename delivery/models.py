@@ -1,6 +1,17 @@
 from django.db import models
 from cloudinary.models import CloudinaryField
 
+class SiteImage(models.Model):
+    key = models.CharField(
+        max_length=50,
+        unique=True,
+        help_text="Unique name for the image. Example: login_bg, login_logo"
+    )
+    image = models.ImageField(upload_to='site_images/')
+
+    def __str__(self):
+        return self.key
+
 # ---------------------------------------
 # Customer Model
 # ---------------------------------------
