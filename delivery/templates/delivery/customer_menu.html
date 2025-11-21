@@ -86,17 +86,20 @@
         {% for item in itemList %}
         <div class="menu-card">
 
-            {% if item.picture %}
-    <img src="{{ item.picture.url }}" class="item-img">
-{% else %}
-    <img src="/static/images/default_item.jpg" class="item-img">
-{% endif %}
+            {% if item.image %}
+            <img src="{{ item.image.url }}" alt="{{ item.name }}">
+                    {% else %}
+            <img src="{% static 'images/default_item.jpg' %}" alt="default">
+                    {% endif %}
 
             <div class="menu-info">
                 <h3>{{ item.name }}</h3>
                 <p>{{ item.description }}</p>
-                <p><strong>₹{{ item.price }}</strong> 
-                {% if item.vegeterian %} (Veg) {% else %} (Non-Veg) {% endif %}</p>
+
+                <p>
+                    <strong>₹{{ item.price }}</strong> 
+                    {% if item.veg %} (Veg) {% else %} (Non-Veg) {% endif %}
+                </p>
 
                 <a href="{% url 'add_to_cart' item.id username %}" class="add-btn">Add to Cart ➕</a>
             </div>

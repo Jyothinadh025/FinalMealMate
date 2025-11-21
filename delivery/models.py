@@ -1,16 +1,4 @@
 from django.db import models
-from cloudinary.models import CloudinaryField
-
-class SiteImage(models.Model):
-    key = models.CharField(
-        max_length=50,
-        unique=True,
-        help_text="Unique name for the image. Example: login_bg, login_logo"
-    )
-    image = models.ImageField(upload_to='site_images/')
-
-    def __str__(self):
-        return self.key
 
 # ---------------------------------------
 # Customer Model
@@ -31,7 +19,7 @@ class Customer(models.Model):
 # ---------------------------------------
 class Restaurant(models.Model):
     name = models.CharField(max_length=50)
-    picture = CloudinaryField('image')
+    picture = models.ImageField(upload_to="restaurant_images/", blank=True, null=True)
     rating = models.FloatField()
 
     def __str__(self):
@@ -47,7 +35,8 @@ class Item(models.Model):
     description = models.CharField(max_length=300)
     price = models.FloatField()
     vegeterian = models.BooleanField(default=False)
-    picture = CloudinaryField('image')
+    image = models.ImageField(upload_to="item_images/", blank=True, null=True)
+
 
 
     def __str__(self):
